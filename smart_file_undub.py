@@ -169,7 +169,7 @@ def smart_stitch(source_sdt_path, target_sdt_path):
     Intelligently stiches two .sdt files based on file sections.
     Currently manages .msf and .vag formatted sections
     """
-    supported_formats = [".vag", ".msf"]
+    supported_formats = [".vag", ".xwma"]
 
     # read in all of the file sections
     source_sections, source_streams = read_in_sections(source_sdt_path)
