@@ -89,7 +89,13 @@ def main(argv=sys.argv, argc=len(sys.argv)):
                     streams[sid].write(b"\0" * 4096)
             elif id in streams:
                 size = get_u32_le(header, 0x04) - 16 ##-16, in order to not count the header
-                streams[id].write( sdt.read(size) )
+                read_data = sdt.read(size)
+                # Field 0xC of the header is a sort of index, 0 is padding.
+                # It is also set to 0 for the first (non-padding) block.
+                # Only write the data if this is the first block,
+                # or field 0xC is nonzero. Otherwise, it's padding to drop.
+                if streams[id].tell() == 0 or get_u32_le(header, 0x0C) != 0:
+                    streams[id].write(read_data)
             else:
                 print("0x%08X: unregistered stream / unknown header ID: %08X" % (sdt.tell() - 16, id))
                 return 1
